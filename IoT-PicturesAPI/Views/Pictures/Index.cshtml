@@ -1,0 +1,63 @@
+﻿<div class="jumbotron">
+    <h1>Pictures</h1>
+    <p class="lead">Search some slothy pictures</p>
+
+    <p class="alert alert-danger" id="alert-jquery">JQuery &.| JavaScript isn't loaded</p>
+
+    <input type="text" id="userInput"/>
+    <button id="submit">Submit</button>
+    <button id="clear">Clear</button>
+    
+    <div class="row" id="picture">
+        
+    </div>
+</div>
+
+
+<script src="/scripts/jquery-1.10.2.min.js"></script>
+<script>
+
+    $(document).ready(function() {
+
+        if (window.jQuery) {
+            $("#alert-jquery").hide();
+        } else {
+            $("#alert-jquery").show();
+        }
+
+        function printData(data)
+        {
+            var data = JSON.parse(data);
+
+            $.each(data, function (index, value) {
+                $('#picture').prepend('<div class="col-md-3"><img src="' + value.thumbnailUrl + '" /></div>');
+            });
+        }
+
+        $("#clear").click(function () {
+            $('#picture').empty();
+        });
+
+        // in-built JQuery function
+        $("#submit").click(function () {
+            // trigger research
+
+            var userInput = $("#userInput").val();
+
+            $.ajax({
+                url: '/Pictures/GetPictures/',
+                timeout: 5000,
+                data: { userInput: userInput }
+            }).done(function (data) {
+                printData(data);
+            }).fail(function (jqXhr, textStatus) {
+                console.log(textStatus);
+            });
+
+        });
+
+    });
+
+
+
+</script>
