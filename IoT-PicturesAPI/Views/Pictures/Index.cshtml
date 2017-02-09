@@ -49,6 +49,7 @@
                 timeout: 5000,
                 data: { userInput: userInput }
             }).done(function (data) {
+                $('#picture').empty();
                 printData(data);
             }).fail(function (jqXhr, textStatus) {
                 console.log(textStatus);
