@@ -57,8 +57,8 @@ namespace IoT_PicturesAPI.Controllers
             var coreReturn = JsonConvert.SerializeObject(tmp.value);
 
             // device part
-            DeviceClient deviceClient = DeviceClient.CreateFromConnectionString(DeviceConnectionString);
-            await SendEvent(deviceClient, coreReturn);
+            //DeviceClient deviceClient = DeviceClient.CreateFromConnectionString(DeviceConnectionString);
+            //await SendEvent(deviceClient, coreReturn);
 
             return coreReturn;
         }
