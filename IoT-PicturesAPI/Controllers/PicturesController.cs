@@ -16,7 +16,8 @@ namespace IoT_PicturesAPI.Controllers
         private const string apiKey = "6094592a37704b4fa74f02f38ff9b1c3";
         // https://api.cognitive.microsoft.com/bing/v5.0/images/search[?q][&count][&offset][&mkt][&safeSearch]
         private const string apiEndpointUrl = "https://api.cognitive.microsoft.com/bing/v5.0/images/search";
-        private string DeviceConnectionString = "HostName=IoTHub-ApiPicture.azure-devices.net;DeviceId=device0821bd2cfcab45ab97548a4b4ada68dc;SharedAccessKey=frGqLIfGUnKqYi5eBku4NL7MaJYKQkbAuIvS51R5Jxc=";
+        private string DeviceConnectionString = "HostName=Picture-iothub.azure-devices.net;DeviceId=device3ce1783a3d124dd0a62f93c4665a8b72;SharedAccessKey=AiYKPWELnG28CIwg3OTuaZrS/gJHZ3RLBYJTs4vSDbo=";
+                                               //HostName=IotHub-ExPicture.azure-devices.net;DeviceId=device356025983f6f465b92371761979c11fe;SharedAccessKey=ICTA28ypc5a+r8HpK3iCjNfs0QptnnK+SqzisF0Rzbo=
 
         // GET: Pictures
         public ActionResult Index()
@@ -57,8 +58,8 @@ namespace IoT_PicturesAPI.Controllers
             var coreReturn = JsonConvert.SerializeObject(tmp.value);
 
             // device part
-            //DeviceClient deviceClient = DeviceClient.CreateFromConnectionString(DeviceConnectionString);
-            //await SendEvent(deviceClient, coreReturn);
+            DeviceClient deviceClient = DeviceClient.CreateFromConnectionString(DeviceConnectionString);
+            await SendEvent(deviceClient, coreReturn);
 
             return coreReturn;
         }
