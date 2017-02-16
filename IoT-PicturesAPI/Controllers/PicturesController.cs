@@ -16,13 +16,13 @@ namespace IoT_PicturesAPI.Controllers
 {
     public class PicturesController : Controller
     {
-        private const string apiKey = "6094592a37704b4fa74f02f38ff9b1c3";
+        private const string apiKey = "#####";
         // https://api.cognitive.microsoft.com/bing/v5.0/images/search[?q][&count][&offset][&mkt][&safeSearch]
         private const string apiEndpointUrl = "https://api.cognitive.microsoft.com/bing/v5.0/images/search";
-        private string DeviceConnectionString = "HostName=Picture-iothub.azure-devices.net;DeviceId=device3ce1783a3d124dd0a62f93c4665a8b72;SharedAccessKey=AiYKPWELnG28CIwg3OTuaZrS/gJHZ3RLBYJTs4vSDbo=";
-        //HostName=IotHub-ExPicture.azure-devices.net;DeviceId=device356025983f6f465b92371761979c11fe;SharedAccessKey=ICTA28ypc5a+r8HpK3iCjNfs0QptnnK+SqzisF0Rzbo=
+        private string DeviceConnectionString = "#####";
+        
 
-        static RegistryManager _registryManager = RegistryManager.CreateFromConnectionString("HostName=Picture-iothub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=y3w3YikdbaRR+mD5HmD7qgL+unKnuTmRnWc6ekIsaY0=");
+        static RegistryManager _registryManager = RegistryManager.CreateFromConnectionString("#####");
 
         
 
