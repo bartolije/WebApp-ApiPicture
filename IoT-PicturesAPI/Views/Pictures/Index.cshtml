@@ -1,15 +1,27 @@
-﻿<div class="jumbotron">
-    <h1>Pictures</h1>
-    <p class="lead">Search some slothy pictures</p>
+﻿<div class="row">
 
     <p class="alert alert-danger" id="alert-jquery">JQuery &.| JavaScript isn't loaded</p>
 
-    <input type="text" id="userInput"/>
-    <button id="submit">Submit</button>
-    <button id="clear">Clear</button>
-    
-    <div class="row" id="picture">
+    <div class="col-md-6">
+
+        <h1>Pictures</h1>
         
+        <input type="text" id="userInput" />
+        <button id="submit">Submit</button>
+        <button id="clear">Clear</button>
+
+        <div id="picture">
+
+        </div>
+
+    </div>
+    <div class="col-md-6">
+        <h1>Devices</h1>
+        <button id="addDevice">add Device</button>
+        <button id="refreshDevice">refresh Device</button>
+        <div id="device">
+
+        </div>
     </div>
 </div>
 
@@ -25,36 +37,63 @@
             $("#alert-jquery").show();
         }
 
-        function printData(data)
-        {
+        function printPictures(data) {
+            $('#picture').empty();
             var data = JSON.parse(data);
 
             $.each(data, function (index, value) {
-                $('#picture').prepend('<div class="col-md-3"><img src="' + value.thumbnailUrl + '" /></div>');
+                $('#picture').prepend('<div class="col-md-3"><img src="' + value.thumbnailUrl + '"  /></div>');
             });
         }
 
-        $("#clear").click(function () {
-            $('#picture').empty();
-        });
+        function printDevice(data) {
+            $('#device').empty();
+            data = JSON.parse(data);
 
-        // in-built JQuery function
+            $.each(data, function (index, value) {
+                $('#device').prepend('<p>ID: ' + value.deviceId + '. State: '+ value.status +'</p>');
+            });
+        }
+
+        // PICTURE SUBMIT RESEARCH
         $("#submit").click(function () {
             // trigger research
-
             var userInput = $("#userInput").val();
 
             $.ajax({
                 url: '/Pictures/GetPictures/',
-                timeout: 5000,
+                timeout: 50000,
                 data: { userInput: userInput }
             }).done(function (data) {
-                $('#picture').empty();
-                printData(data);
+                printPictures(data);
             }).fail(function (jqXhr, textStatus) {
                 console.log(textStatus);
             });
+        });
 
+        // ADD A NEW DEVICE
+        $("#addDevice").click(function () {
+            $.ajax({
+                url: '/Pictures/AddDevice/',
+                timeout: 50000,
+            }).done(function (data) {
+                printDevice(data);
+            }).fail(function (jqXhr, textStatus) {
+                console.log(textStatus);
+            });
+            $("#refreshDevice").click();
+        });
+
+        // ADD A NEW DEVICE
+        $("#refreshDevice").click(function () {
+            $.ajax({
+                url: '/Pictures/GetDevices/',
+                timeout: 50000,
+            }).done(function (data) {
+                printDevice(data);
+            }).fail(function (jqXhr, textStatus) {
+                console.log(textStatus);
+            });
         });
 
     });

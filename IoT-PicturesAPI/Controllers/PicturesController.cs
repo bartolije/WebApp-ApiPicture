@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using IoT_PicturesAPI.Models;
+using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Client;
+using Microsoft.Azure.Devices.Client.Exceptions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -17,7 +20,11 @@ namespace IoT_PicturesAPI.Controllers
         // https://api.cognitive.microsoft.com/bing/v5.0/images/search[?q][&count][&offset][&mkt][&safeSearch]
         private const string apiEndpointUrl = "https://api.cognitive.microsoft.com/bing/v5.0/images/search";
         private string DeviceConnectionString = "HostName=Picture-iothub.azure-devices.net;DeviceId=device3ce1783a3d124dd0a62f93c4665a8b72;SharedAccessKey=AiYKPWELnG28CIwg3OTuaZrS/gJHZ3RLBYJTs4vSDbo=";
-                                               //HostName=IotHub-ExPicture.azure-devices.net;DeviceId=device356025983f6f465b92371761979c11fe;SharedAccessKey=ICTA28ypc5a+r8HpK3iCjNfs0QptnnK+SqzisF0Rzbo=
+        //HostName=IotHub-ExPicture.azure-devices.net;DeviceId=device356025983f6f465b92371761979c11fe;SharedAccessKey=ICTA28ypc5a+r8HpK3iCjNfs0QptnnK+SqzisF0Rzbo=
+
+        static RegistryManager _registryManager = RegistryManager.CreateFromConnectionString("HostName=Picture-iothub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=y3w3YikdbaRR+mD5HmD7qgL+unKnuTmRnWc6ekIsaY0=");
+
+        
 
         // GET: Pictures
         public ActionResult Index()
@@ -63,18 +70,41 @@ namespace IoT_PicturesAPI.Controllers
 
             return coreReturn;
         }
-        
+
+        [HttpGet]
+        public async Task<string> GetDevices()
+        {
+            var coreReturn = String.Empty;
+
+            try
+            {
+                var devices = await _registryManager.GetDevicesAsync(20);
+                coreReturn = JsonConvert.SerializeObject(devices);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("=======================");
+                Console.WriteLine(ex.ToString());
+                Console.WriteLine("=======================");
+            }
+
+            return coreReturn;
+        }
+
+        [HttpGet]
+        public async Task<string> AddDevice()
+        {
+            var deviceId = await AddDeviceAsync();
+            return JsonConvert.SerializeObject(deviceId);
+        }
 
         static async Task SendEvent(DeviceClient deviceClient, string message)
         {
             try
             {
-                string dataBuffer = String.Empty;
-
-                dataBuffer = JsonConvert.SerializeObject(message);
-                Message eventMessage = new Message(Encoding.UTF8.GetBytes(dataBuffer));
-
-                await deviceClient.SendEventAsync(eventMessage);
+                var strMessage = new Microsoft.Azure.Devices.Client.Message(Encoding.ASCII.GetBytes(message));
+                var clientDevice = DeviceClient.Create("Picture-iothub.azure-devices.net", new DeviceAuthenticationWithRegistrySymmetricKey("device3ce1783a3d124dd0a62f93c4665a8b72", "AiYKPWELnG28CIwg3OTuaZrS/gJHZ3RLBYJTs4vSDbo="));
+                await clientDevice.SendEventAsync(strMessage);
             }
             catch (Exception e)
             {
@@ -83,6 +113,26 @@ namespace IoT_PicturesAPI.Controllers
                 throw;
             }
            
+        }
+
+        private static async Task<string> AddDeviceAsync()
+        {
+            var deviceId = Guid.NewGuid().ToString("N");
+            var deviceList = new List<Device>();
+
+            var device = new Device();
+
+            try
+            {
+                device = await _registryManager.AddDeviceAsync(new Device(deviceId));
+            }
+            catch (DeviceAlreadyExistsException)
+            {
+                device = await _registryManager.GetDeviceAsync(deviceId);
+            }
+
+            deviceList.Add(device);
+            return JsonConvert.SerializeObject(deviceList);
         }
 
     }
