@@ -26,7 +26,10 @@ Please note that you may need to install the Azure SDK.
 ### TODO List
 
 Because anyone need a todo list.
-It would be awesome to add a proper and sexy form. Aldo, add a proper internal and generic 
+It would be awesome to add a proper and sexy form.
+Also, add a proper internal and generic interface, to manage and deal with all API methods.
+
+Finally, I guess we can work with some settings file, to avoid clear or trash string in code.
 
 
 ### Notes
